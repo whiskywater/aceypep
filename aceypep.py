@@ -1,6 +1,7 @@
+import os
 import glob
 import shutil
-import os
+
 
 def read_quarantine_files(quarantine_dir):
     # Use glob to get all files in the quarantine directory
@@ -18,6 +19,7 @@ def read_quarantine_files(quarantine_dir):
                 print("File copied successfully:", file_name)
             except Exception as e:
                 print("Error copying file:", str(e))
+
 
 def read_detection_logs(log_dir):
     # Use glob to get all JSON files in the directory
@@ -67,22 +69,21 @@ def main():
         if user_input.startswith('extract'):
             args = user_input.split()
             if len(args) == 1:
-                drive = input("Enter drive letter: ").strip().upper()
+                drive = input("Enter device path: ").strip()
             elif len(args) == 2 and args[1] == '-q':
-                drive = input("Enter drive letter: ").strip().upper()
+                drive = input("Enter device path: ").strip()
             elif len(args) == 2:
-                drive = args[1].strip().upper()
+                drive = args[1].strip()
             else:
                 print("Invalid command.")
                 continue
 
-            # Check if the drive exists
-            if not os.path.exists(f"{drive}:\\"):
-                print("Error: The specified drive does not exist.")
-                continue
+            log_directory = os.path.join(drive, "ProgramData", "Malwarebytes", "MBAMService", "ScanResults")
+            quarantine_directory = os.path.join(drive, "ProgramData", "Malwarebytes", "MBAMService", "Quarantine")
 
-            log_directory = f"{drive}:\\ProgramData\\Malwarebytes\\MBAMService\\ScanResults"
-            quarantine_directory = f"{drive}:\\ProgramData\\Malwarebytes\\MBAMService\\Quarantine"
+            if not os.path.exists(log_directory):
+                print("Error: Log directory does not exist.")
+                continue
 
             if len(args) == 2 and args[1] == '-q':
                 read_quarantine_files(quarantine_directory)
@@ -103,6 +104,7 @@ def main():
         else:
             print(
                 "Invalid command. Type 'extract' to begin extraction, 'extract -q' to check for quarantined files, or 'exit' to quit.")
+
 
 if __name__ == "__main__":
     main()
