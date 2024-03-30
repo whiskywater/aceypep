@@ -56,6 +56,7 @@ def read_detection_logs(log_dir):
             if start_index == -1:
                 print("Object Path not found in", json_file)
 
+
 def main():
     print("Welcome to aceypep.")
     print("Type 'help' for a list of commands.")
@@ -73,6 +74,11 @@ def main():
                 drive = args[1].strip().upper()
             else:
                 print("Invalid command.")
+                continue
+
+            # Check if the drive exists
+            if not os.path.exists(f"{drive}:\\"):
+                print("Error: The specified drive does not exist.")
                 continue
 
             log_directory = f"{drive}:\\ProgramData\\Malwarebytes\\MBAMService\\ScanResults"
@@ -95,7 +101,8 @@ def main():
             print("Exiting program.")
             break
         else:
-            print("Invalid command. Type 'extract' to begin extraction, 'extract -q' to check for quarantined files, or 'exit' to quit.")
+            print(
+                "Invalid command. Type 'extract' to begin extraction, 'extract -q' to check for quarantined files, or 'exit' to quit.")
 
 if __name__ == "__main__":
     main()
